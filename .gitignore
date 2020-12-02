@@ -11,5 +11,11 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
+# Data directory
+data
+
+# Cloud::1 application binary
+main
+
 # Dependency directories (remove the comment below to include it)
 # vendor/

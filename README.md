@@ -30,8 +30,10 @@ To do this manually, open up your hosts file `/etc/hosts` for linux or macos mac
 
 Then add this to the end of the file:
 ```
-googleapis.local 127.0.0.1
-microsoft.local 127.0.0.1
+127.0.0.1 googleapis.local secretmanager.googleapis.local
+127.0.0.1 microsoft.local
+::1 googleapis.local secretmanager.googleapis.local
+::1 microsoft.local
 ```
 
 Now save the file.
@@ -46,4 +48,7 @@ TODO: Provide instructions for downloading and running the binary locally.
 
 ## Google Cloud Service endpoints
 
-- [Secret Manager](https://cloud.google.com/secret-manager/docs/apis) - secretmanager.googleapis.local:5988
+Cloud::1 provides some google cloud services that are accessible via a HTTP API along with a subset of services
+that support gRPC.
+
+- [Secret Manager](https://cloud.google.com/secret-manager/docs/apis) (HTTP, gRPC) - secretmanager.googleapis.local:5988
