@@ -1,3 +1,5 @@
 FROM alpine:3.12.1
 
+ENV CLOUD_ONE_DATA_DIR=/lib/data
+
 EXPOSE 5988

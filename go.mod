@@ -3,7 +3,9 @@ module github.com/freshwebio/cloud-one
 go 1.15
 
 require (
+	github.com/dimchansky/utfbom v1.1.1
 	github.com/golang/protobuf v1.4.3 // indirect
+	github.com/google/uuid v1.1.2
 	github.com/gorilla/mux v1.8.0
 	github.com/jinzhu/copier v0.1.0
 	github.com/soheilhy/cmux v0.1.4 // indirect
