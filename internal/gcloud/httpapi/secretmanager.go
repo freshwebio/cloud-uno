@@ -13,6 +13,7 @@ import (
 
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/types/known/fieldmaskpb"
 )
 
 const (
@@ -36,6 +37,13 @@ func RegisterSecretManager(router *mux.Router, resolver types.Resolver) {
 
 	router.HandleFunc("/v1/projects/{project}/secrets", c.ListSecrets).
 		Methods("GET").Host("secretmanager.googleapis.local")
+
+	router.HandleFunc("/v1/projects/{project}/secrets/{secret}", c.GetSecret).
+		Methods("GET").Host("secretmanager.googleapis.local")
+
+	router.HandleFunc("/v1/projects/{project}/secrets/{secret}", c.UpdateSecret).
+		Methods("PATCH").Host("secretmanager.googleapis.local").
+		Queries("updateMask", "{updateMask:.+}")
 }
 
 type secretManagerController struct {
@@ -148,6 +156,87 @@ func (c *secretManagerController) ListSecrets(w http.ResponseWriter, r *http.Req
 		return
 	}
 	responseBytes, err := protojson.Marshal(listSecretsResponse)
+	if err != nil {
+		log.Println(err)
+		httputils.HTTPError(
+			w, http.StatusBadRequest,
+			fmt.Sprintf("Unexpected error occurred: failed when preparing response"),
+		)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(responseBytes))
+}
+
+func (c *secretManagerController) GetSecret(w http.ResponseWriter, r *http.Request) {
+	project := mux.Vars(r)["project"]
+	secret := mux.Vars(r)["secret"]
+	name := fmt.Sprintf("projects/%s/secrets/%s", project, secret)
+	getSecretRequest := &secretmanagerpb.GetSecretRequest{
+		Name: name,
+	}
+	getSecretResponse, err := c.secretManager.GetSecret(
+		r.Context(),
+		getSecretRequest,
+	)
+	if err != nil {
+		log.Println(err)
+		httputils.HTTPErrorFromGRPC(w, err)
+		return
+	}
+	responseBytes, err := protojson.Marshal(getSecretResponse)
+	if err != nil {
+		log.Println(err)
+		httputils.HTTPError(
+			w, http.StatusBadRequest,
+			fmt.Sprintf("Unexpected error occurred: failed when preparing response"),
+		)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(responseBytes))
+}
+
+func (c *secretManagerController) UpdateSecret(w http.ResponseWriter, r *http.Request) {
+	project := mux.Vars(r)["project"]
+	secret := mux.Vars(r)["secret"]
+	mask := mux.Vars(r)["updateMask"]
+	name := fmt.Sprintf("projects/%s/secrets/%s", project, secret)
+	requestBytes, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		httputils.HTTPError(
+			w, http.StatusBadRequest,
+			fmt.Sprintf("Invalid request: %s", err.Error()),
+		)
+		return
+	}
+	updateSecretRequest := &secretmanagerpb.UpdateSecretRequest{
+		Secret: &secretmanagerpb.Secret{},
+		UpdateMask: &fieldmaskpb.FieldMask{
+			Paths: strings.Split(mask, ","),
+		},
+	}
+	err = protojson.Unmarshal(requestBytes, updateSecretRequest.Secret)
+	if err != nil {
+		httputils.HTTPError(
+			w, http.StatusBadRequest,
+			fmt.Sprintf("Invalid request: %s", err.Error()),
+		)
+		return
+	}
+	updateSecretRequest.Secret.Name = name
+	updateSecretResponse, err := c.secretManager.UpdateSecret(
+		r.Context(),
+		updateSecretRequest,
+	)
+	if err != nil {
+		log.Println(err)
+		httputils.HTTPErrorFromGRPC(w, err)
+		return
+	}
+	responseBytes, err := protojson.Marshal(updateSecretResponse)
 	if err != nil {
 		log.Println(err)
 		httputils.HTTPError(

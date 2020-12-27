@@ -16,6 +16,7 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/fieldmaskpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
@@ -57,21 +58,14 @@ func (s *SecretManager) ListSecrets(ctx context.Context, req *secretmanagerpb.Li
 	walkFn := func(path string, info os.FileInfo, err error) error {
 		if info != nil && !info.IsDir() && strings.HasSuffix(info.Name(), ".json") {
 			name := info.Name()
-			pathPieces := strings.Split(path, "/")
-			// The second to last piece is the parent directory.
-			parentDir := pathPieces[len(pathPieces)-2]
-			filePath := fmt.Sprintf("%s/%s/%s", projectDir, parentDir, name)
-			bytes, err := afero.ReadFile(s.fs, filePath)
-			if err != nil {
-				return err
-			}
-			secret := &secretmanagerpb.Secret{}
-			err = protojson.Unmarshal(bytes, secret)
-			if err != nil {
-				return err
-			}
 			secretID := strings.TrimSuffix(name, ".json")
-			secret.Name = fmt.Sprintf("%s/secrets/%s", req.Parent, secretID)
+			name = fmt.Sprintf("%s/secrets/%s", req.Parent, secretID)
+			secret, err := s.GetSecret(ctx, &secretmanagerpb.GetSecretRequest{
+				Name: name,
+			})
+			if err != nil {
+				return err
+			}
 			secrets = append(secrets, secret)
 		}
 		return nil
@@ -206,39 +200,112 @@ func (s *SecretManager) AddSecretVersion(ctx context.Context, req *secretmanager
 	}, nil
 }
 
-func (*SecretManager) GetSecret(context.Context, *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetSecret not implemented")
+func (s *SecretManager) createSecretFilePath(name string) string {
+	pathPieces := strings.Split(name, "/")
+	fileName := fmt.Sprintf("%s.json", pathPieces[len(pathPieces)-1])
+	filePath := fmt.Sprintf("%s/%s/%s", s.dataRootDir, name, fileName)
+	return filePath
 }
-func (*SecretManager) UpdateSecret(context.Context, *secretmanagerpb.UpdateSecretRequest) (*secretmanagerpb.Secret, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateSecret not implemented")
+
+// GetSecret deals with retrieving a specified secret.
+func (s *SecretManager) GetSecret(ctx context.Context, req *secretmanagerpb.GetSecretRequest) (*secretmanagerpb.Secret, error) {
+	filePath := s.createSecretFilePath(req.Name)
+	bytes, err := afero.ReadFile(s.fs, filePath)
+	if err != nil {
+		return nil, err
+	}
+	secret := &secretmanagerpb.Secret{}
+	err = protojson.Unmarshal(bytes, secret)
+	if err != nil {
+		return nil, err
+	}
+	secret.Name = req.Name
+	return secret, nil
 }
+
+// UpdateSecret deals with updating a subset of fields for the specified secret.
+func (s *SecretManager) UpdateSecret(ctx context.Context, req *secretmanagerpb.UpdateSecretRequest) (*secretmanagerpb.Secret, error) {
+	err := validateUpdateMask(req.UpdateMask)
+	if err != nil {
+		return nil, err
+	}
+	storedSecret, err := s.GetSecret(ctx, &secretmanagerpb.GetSecretRequest{
+		Name: req.Secret.Name,
+	})
+	if err != nil {
+		return nil, err
+	}
+	storedSecret.Labels = req.Secret.Labels
+	bytes, err := protojson.Marshal(storedSecret)
+	if err != nil {
+		return nil, err
+	}
+	filePath := s.createSecretFilePath(req.Secret.Name)
+	err = afero.WriteFile(s.fs, filePath, bytes, 0755)
+	return storedSecret, err
+}
+
+// DeleteSecret deals with deleting a secret for the provided project.
 func (*SecretManager) DeleteSecret(context.Context, *secretmanagerpb.DeleteSecretRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteSecret not implemented")
 }
+
+// ListSecretVersions deals with listing all versions of a given secret.
 func (*SecretManager) ListSecretVersions(context.Context, *secretmanagerpb.ListSecretVersionsRequest) (*secretmanagerpb.ListSecretVersionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListSecretVersions not implemented")
 }
+
+// GetSecretVersion deals with retrieving metadata about a secret version.
 func (*SecretManager) GetSecretVersion(context.Context, *secretmanagerpb.GetSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSecretVersion not implemented")
 }
+
+// AccessSecretVersion deals with retrieving the raw data for a specified secret version.
 func (*SecretManager) AccessSecretVersion(context.Context, *secretmanagerpb.AccessSecretVersionRequest) (*secretmanagerpb.AccessSecretVersionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccessSecretVersion not implemented")
 }
+
+// DisableSecretVersion deals with disabling the specified secret version.
 func (*SecretManager) DisableSecretVersion(context.Context, *secretmanagerpb.DisableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DisableSecretVersion not implemented")
 }
+
+// EnableSecretVersion deals with enabling the specified secret version.
 func (*SecretManager) EnableSecretVersion(context.Context, *secretmanagerpb.EnableSecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method EnableSecretVersion not implemented")
 }
+
+// DestroySecretVersion deals with permanently destroying the specified secret version.
 func (*SecretManager) DestroySecretVersion(context.Context, *secretmanagerpb.DestroySecretVersionRequest) (*secretmanagerpb.SecretVersion, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DestroySecretVersion not implemented")
 }
+
+// SetIamPolicy deals with setting an IAM policy for the specified secret.
 func (*SecretManager) SetIamPolicy(context.Context, *v1Iam.SetIamPolicyRequest) (*v1Iam.Policy, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetIamPolicy not implemented")
 }
+
+// GetIamPolicy retrieves the IAM policy for the specified secret.
 func (*SecretManager) GetIamPolicy(context.Context, *v1Iam.GetIamPolicyRequest) (*v1Iam.Policy, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetIamPolicy not implemented")
 }
+
+// TestIamPermissions checks the permissions the caller has for the specified secret.
 func (*SecretManager) TestIamPermissions(context.Context, *v1Iam.TestIamPermissionsRequest) (*v1Iam.TestIamPermissionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TestIamPermissions not implemented")
+}
+
+func validateUpdateMask(updateMask *fieldmaskpb.FieldMask) error {
+	foundInvalidField := false
+	i := 0
+	for !foundInvalidField && i < len(updateMask.Paths) {
+		if updateMask.Paths[i] != "labels" {
+			foundInvalidField = true
+		}
+		i = i + 1
+	}
+	if foundInvalidField {
+		return status.Errorf(codes.InvalidArgument, "Update mask must only contain mutable fields")
+	}
+	return nil
 }
