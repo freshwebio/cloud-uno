@@ -2,12 +2,16 @@ package services
 
 import (
 	"fmt"
+	"log"
 
+	"github.com/docker/docker/client"
 	"github.com/freshwebio/cloud-one/pkg/config"
 	"github.com/freshwebio/cloud-one/pkg/gcloud/grpc"
+	"github.com/freshwebio/cloud-one/pkg/gcloud/storage"
 	"github.com/freshwebio/cloud-one/pkg/hosts"
 	"github.com/freshwebio/cloud-one/pkg/netutils"
 	"github.com/freshwebio/cloud-one/pkg/types"
+	"github.com/freshwebio/cloud-one/pkg/utils"
 	"github.com/spf13/afero"
 )
 
@@ -26,6 +30,15 @@ type defaultResolver struct {
 func (r *defaultResolver) Get(service string) interface{} {
 	return r.services[service]
 }
+
+const (
+	// GCloudSecretManagerName provides the name used to identify
+	// the google cloud secret manager service.
+	GCloudSecretManagerName = "secretmanager"
+	// GCloudStorageName provides the name used to identify
+	// the google cloud storage service.
+	GCloudStorageName = "storage"
+)
 
 func (r *defaultResolver) Register() (err error) {
 	cfg, err := config.Load()
@@ -72,10 +85,23 @@ func (r *defaultResolver) Register() (err error) {
 		return
 	}
 
+	// Docker is used to orchestrate and manage both vendor-managed
+	// emulators and open source software used as the backend for some cloud services.
+	dockerClient, err := client.NewEnvClient()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Given gRPC is a fantastic representation of a service that is usually
 	// abstracted away from a REST API route handler, the default resolver will use
-	// the gRPC services.
-	smRootDir := fmt.Sprintf("%s/gcloud/secretmanager", *cfg.DataDirectory)
-	r.services["gcloud.secretmanager"], err = grpc.NewSecretManager(smRootDir, fs, serverIP, hostsService)
+	// the gRPC services for Google Cloud APIs that support gRPC.
+	if utils.CommaSeparatedListContains(*cfg.GCloudServices, GCloudSecretManagerName) {
+		smRootDir := fmt.Sprintf("%s/gcloud/secretmanager", *cfg.DataDirectory)
+		r.services["gcloud.secretmanager"], err = grpc.NewSecretManager(smRootDir, fs, serverIP, hostsService)
+	}
+
+	if utils.CommaSeparatedListContains(*cfg.GCloudServices, GCloudStorageName) {
+		r.services["gcloud.storage"], err = storage.New(dockerClient)
+	}
 	return
 }

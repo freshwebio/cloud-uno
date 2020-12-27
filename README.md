@@ -229,3 +229,4 @@ All http endpoints are not secure unless you create your own reverse proxy that 
 
 - [Secret Manager](https://cloud.google.com/secret-manager/docs/apis) [secretmanager] (HTTP, gRPC) - secretmanager.googleapis.local:5988/v1/
 - [API Gateway](https://cloud.google.com/api-gateway/docs/apis) [apigateway] (HTTP) - apigateway.googleapis.local:5988/v1beta/
+- [Cloud Storage](https://cloud.google.com/storage/docs/json_api) [storage] (HTTP) - storage.googleapis.local:5988/storage/v1/
