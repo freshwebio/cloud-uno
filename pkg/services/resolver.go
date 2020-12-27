@@ -50,7 +50,7 @@ func (r *defaultResolver) Register() (err error) {
 	// is no need for communicating with a separate process over a unix socket,
 	// with the right permissions it can interact with the os hosts file directly.
 	if *cfg.RunOnHost {
-		hostsService, err = hosts.NewManager()
+		hostsService, err = hosts.NewManager(cfg)
 		if err != nil {
 			return
 		}

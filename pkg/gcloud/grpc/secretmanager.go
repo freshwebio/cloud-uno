@@ -175,7 +175,8 @@ func (s *SecretManager) AddSecretVersion(ctx context.Context, req *secretmanager
 	if err != nil {
 		return nil, err
 	}
-	version, err := s.addVersion(versions, req.Payload.Data)
+	versionsDirectory := fmt.Sprintf("%s/%s", s.dataRootDir, req.Parent)
+	version, err := s.addVersion(versions, versionsDirectory, req.Payload.Data)
 	if err != nil {
 		return nil, err
 	}

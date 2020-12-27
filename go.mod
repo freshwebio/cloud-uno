@@ -8,6 +8,7 @@ require (
 	github.com/google/uuid v1.1.2
 	github.com/gorilla/mux v1.8.0
 	github.com/jinzhu/copier v0.1.0
+	github.com/namsral/flag v1.7.4-pre
 	github.com/soheilhy/cmux v0.1.4 // indirect
 	github.com/spf13/afero v1.4.1
 	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b // indirect

@@ -115,7 +115,7 @@ func prepare(flagSet *flag.FlagSet) *Config {
 	flagSet.BoolVar(
 		&debug,
 		"debug",
-		"",
+		false,
 		"Whether or not to run the application in debug mode, where debug logs will be written to stdout.",
 	)
 
