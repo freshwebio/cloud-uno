@@ -100,6 +100,10 @@ func (m *Manager) Add(ip *string, hosts *string) error {
 		m.Entries[position].Raw = m.Entries[position].Export() // reset raw
 	}
 	m.clean()
+	// Each host can only be configured to work for a single IP at a time,
+	// to ensure the provided IP is used we need to make sure
+	// we clear all other references to the same hosts.
+	m.removeHostsFromOtherIPs(*ip, hostsList)
 	err := m.flush()
 	return err
 }
@@ -142,6 +146,17 @@ func (m *Manager) Remove(ip *string, hosts *string) error {
 	m.clean()
 	err := m.flush()
 	return err
+}
+
+func (m *Manager) removeHostsFromOtherIPs(keepForIP string, hosts []string) {
+	for _, host := range hosts {
+		for pos, entry := range m.Entries {
+			if itemInSlice(host, entry.Hosts) && entry.IP != keepForIP {
+				entry.Hosts = removeFromSlice(host, entry.Hosts)
+			}
+			m.Entries[pos] = entry
+		}
+	}
 }
 
 func (m *Manager) clean() {

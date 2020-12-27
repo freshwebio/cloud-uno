@@ -55,8 +55,12 @@ func (s *SecretManager) ListSecrets(ctx context.Context, req *secretmanagerpb.Li
 	secrets := []*secretmanagerpb.Secret{}
 	projectDir := fmt.Sprintf("%s/%s/secrets", s.dataRootDir, req.Parent)
 	walkFn := func(path string, info os.FileInfo, err error) error {
-		if !info.IsDir() && strings.HasSuffix(info.Name(), ".json") {
-			filePath := fmt.Sprintf("%s/%s", projectDir, info.Name())
+		if info != nil && !info.IsDir() && strings.HasSuffix(info.Name(), ".json") {
+			name := info.Name()
+			pathPieces := strings.Split(path, "/")
+			// The second to last piece is the parent directory.
+			parentDir := pathPieces[len(pathPieces)-2]
+			filePath := fmt.Sprintf("%s/%s/%s", projectDir, parentDir, name)
 			bytes, err := afero.ReadFile(s.fs, filePath)
 			if err != nil {
 				return err
@@ -66,7 +70,7 @@ func (s *SecretManager) ListSecrets(ctx context.Context, req *secretmanagerpb.Li
 			if err != nil {
 				return err
 			}
-			secretID := strings.TrimSuffix(info.Name(), ".json")
+			secretID := strings.TrimSuffix(name, ".json")
 			secret.Name = fmt.Sprintf("%s/secrets/%s", req.Parent, secretID)
 			secrets = append(secrets, secret)
 		}
@@ -92,12 +96,12 @@ func (s *SecretManager) CreateSecret(ctx context.Context, req *secretmanagerpb.C
 	if err != nil {
 		return nil, err
 	}
-	dirPath := fmt.Sprintf("%s/%s/secrets", s.dataRootDir, req.Parent)
+	dirPath := fmt.Sprintf("%s/%s/secrets/%s", s.dataRootDir, req.Parent, req.SecretId)
 	err = s.fs.MkdirAll(dirPath, 0755)
 	if err != nil {
 		return nil, err
 	}
-	filePath := fmt.Sprintf("%s/%s/%s.json", dirPath, req.SecretId, req.SecretId)
+	filePath := fmt.Sprintf("%s/%s.json", dirPath, req.SecretId)
 	handle, err := s.fs.Create(filePath)
 	if err != nil {
 		return nil, err
@@ -148,24 +152,38 @@ func (s *SecretManager) getVersions(secret string) (*Versions, error) {
 func (s *SecretManager) addVersion(versions *Versions, versionsDirectory string, payload []byte) (*Version, error) {
 	versionsCopy := &Versions{}
 	copier.Copy(versionsCopy, versions)
-	versionsCopy.Next = versionsCopy.Next + 1
 	fileNameUUID, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
 	}
 	fileName := fileNameUUID.String()
-	version := &Version{
-		File:       fileName,
-		Number:     versionsCopy.Next,
+	version := Version{
+		File: fileName,
+		// Ensure we take a copy instead of using a pointer
+		// to make sure the correct value is serialised.
+		Number:     (*versionsCopy).Next,
 		CreateTime: int(time.Now().Unix()),
 	}
+	versionsCopy.Versions[version.Number] = version
 	filePath := fmt.Sprintf("%s/%s", versionsDirectory, fileName)
 	// Write the file containng the secret data.
 	err = afero.WriteFile(s.fs, filePath, payload, 0755)
 	if err != nil {
 		return nil, err
 	}
-	return version, nil
+	// Before writing the update, increment the next id.
+	// incrementing integers isn't great for requests being made in parallel,
+	// this will most likely need to be improved depending on what software is being used locally
+	// to orchestrate emulations of infrastructure.
+	versionsCopy.Next = versionsCopy.Next + 1
+	// Write changes to the versions object to the file system.
+	versionsBytes, err := json.Marshal(versions)
+	if err != nil {
+		return nil, err
+	}
+	versionsFilePath := fmt.Sprintf("%s/versions.json", versionsDirectory)
+	err = afero.WriteFile(s.fs, versionsFilePath, versionsBytes, 0755)
+	return &version, nil
 }
 
 // AddSecretVersion deals with adding a new version for a specified secret.
@@ -176,6 +194,7 @@ func (s *SecretManager) AddSecretVersion(ctx context.Context, req *secretmanager
 		return nil, err
 	}
 	versionsDirectory := fmt.Sprintf("%s/%s", s.dataRootDir, req.Parent)
+	fmt.Println("versionsDirectory:", versionsDirectory)
 	version, err := s.addVersion(versions, versionsDirectory, req.Payload.Data)
 	if err != nil {
 		return nil, err

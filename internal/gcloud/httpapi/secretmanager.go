@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/freshwebio/cloud-one/pkg/httputils"
 	"github.com/freshwebio/cloud-one/pkg/types"
@@ -43,8 +44,10 @@ type secretManagerController struct {
 
 func (c *secretManagerController) AddVersion(w http.ResponseWriter, r *http.Request) {
 	project := mux.Vars(r)["project"]
-	secret := mux.Vars(r)["secret"]
+	secret := strings.TrimSuffix(mux.Vars(r)["secret"], ":addVersion")
+	fmt.Println("secret: ", secret)
 	parent := fmt.Sprintf("projects/%s/secrets/%s", project, secret)
+	fmt.Println("parent: ", parent)
 	requestBytes, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		httputils.HTTPError(
@@ -53,10 +56,10 @@ func (c *secretManagerController) AddVersion(w http.ResponseWriter, r *http.Requ
 		)
 		return
 	}
-	secretVersionRequest := &secretmanagerpb.AddSecretVersionRequest{
-		Parent: parent,
-	}
+	secretVersionRequest := &secretmanagerpb.AddSecretVersionRequest{}
 	err = protojson.Unmarshal(requestBytes, secretVersionRequest)
+	// Set parent after unmarshalling so it doesn't get overridden.
+	secretVersionRequest.Parent = parent
 	secretVersion, err := c.secretManager.AddSecretVersion(
 		r.Context(),
 		secretVersionRequest,
