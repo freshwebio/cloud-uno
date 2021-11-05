@@ -3,7 +3,7 @@ package hosts
 import (
 	"net/rpc"
 
-	"github.com/freshwebio/cloud-one/pkg/connect"
+	"github.com/freshwebio/cloud-uno/pkg/connect"
 )
 
 // NewClient creates a new client for managing os hosts.

@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/freshwebio/cloud-one/pkg/hosts"
+	"github.com/freshwebio/cloud-uno/pkg/hosts"
 	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
 	"github.com/spf13/afero"

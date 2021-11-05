@@ -2,7 +2,7 @@
 
 Cloud::1 enables running cloud services on your local machine for faster, cheaper, end-to-end development.
 
-*If you were wondering, the name Cloud::1 (cloud one) is derived from the ::1 IPv6 address that is the shorthand for the loopback localhost ip.*
+*If you were wondering, the name Cloud::1 (cloud uno) is derived from the ::1 IPv6 address that is the shorthand for the loopback localhost ip.*
 
 ## Prerequisites
 
@@ -31,9 +31,9 @@ All configuration should be provided via environment variables, command line opt
 
 | Source          | Example                        |
 | --------------- | :----------------------------- |
-| **Flag**        | -cloud_one_file_system memory  |
-| **Environment** | CLOUD_ONE_FILE_SYSTEM=memory   |
-| **File**        | cloud_one_file_system memory   |
+| **Flag**        | -cloud_uno_file_system memory  |
+| **Environment** | CLOUD_UNO_FILE_SYSTEM=memory   |
+| **File**        | cloud_uno_file_system memory   |
 
 ### Data Directory
 
@@ -45,9 +45,9 @@ The location in the docker container to store all the data for the cloud service
 
 | Source          | Example                            |
 | --------------- | :--------------------------------- |
-| **Flag**        | -cloud_one_data_dir /path/to/data  |
-| **Environment** | CLOUD_ONE_DATA_DIR=/path/to/data   |
-| **File**        | cloud_one_data_dir /path/to/data   |
+| **Flag**        | -cloud_uno_data_dir /path/to/data  |
+| **Environment** | CLOUD_UNO_DATA_DIR=/path/to/data   |
+| **File**        | cloud_uno_data_dir /path/to/data   |
 
 ### Run on Host
 
@@ -59,15 +59,15 @@ If set, this will enable in-process features that are only available to privileg
 
 | Source          | Example                      |
 | --------------- | :--------------------------- |
-| **Flag**        | -cloud_one_run_on_host true  |
-| **Environment** | CLOUD_ONE_RUN_ON_HOST=true   |
-| **File**        | cloud_one_run_on_host true   |
+| **Flag**        | -cloud_uno_run_on_host true  |
+| **Environment** | CLOUD_UNO_RUN_ON_HOST=true   |
+| **File**        | cloud_uno_run_on_host true   |
 
 ### Server IP
 
 **(optional, default = `172.18.0.22`)**
 
-The IP Address the cloud one server is running on, this is ignored when running the server directly on the host.
+The IP Address the cloud uno server is running on, this is ignored when running the server directly on the host.
 
 **It is down to you to make sure the server sits behind the configured IP!**
 
@@ -75,9 +75,9 @@ The IP Address the cloud one server is running on, this is ignored when running 
 
 | Source          | Example                      |
 | --------------- | :--------------------------- |
-| **Flag**        | -cloud_one_ip 172.18.0.24    |
-| **Environment** | CLOUD_ONE_IP=172.18.0.24     |
-| **File**        | cloud_one_ip 172.18.0.24     |
+| **Flag**        | -cloud_uno_ip 172.18.0.24    |
+| **Environment** | CLOUD_UNO_IP=172.18.0.24     |
+| **File**        | cloud_UNO_ip 172.18.0.24     |
 
 ### Hosts File Path
 
@@ -89,9 +89,9 @@ A custom path to the hosts file on the host machine, otherwise defaults to the c
 
 | Source          | Example                              |
 | --------------- | :----------------------------------- |
-| **Flag**        | -cloud_one_hosts_path /custom/hosts  |
-| **Environment** | CLOUD_ONE_HOSTS_PATH=/custom/hosts   |
-| **File**        | cloud_one_hosts_path /custom/hosts   |
+| **Flag**        | -cloud_uno_hosts_path /custom/hosts  |
+| **Environment** | CLOUD_UNO_HOSTS_PATH=/custom/hosts   |
+| **File**        | cloud_uno_hosts_path /custom/hosts   |
 
 ### AWS Services
 
@@ -103,9 +103,9 @@ AWS Services to run emulations for.
 
 | Source          | Example                              |
 | --------------- | :----------------------------------- |
-| **Flag**        | -cloud_one_aws_services s3,dynamodb  |
-| **Environment** | CLOUD_ONE_AWS_SERVICES=s3,dynamodb   |
-| **File**        | cloud_one_aws_services s3,dynamodb   |
+| **Flag**        | -cloud_uno_aws_services s3,dynamodb  |
+| **Environment** | CLOUD_UNO_AWS_SERVICES=s3,dynamodb   |
+| **File**        | cloud_uno_aws_services s3,dynamodb   |
 
 ### Google Cloud Services
 
@@ -117,9 +117,9 @@ Google Cloud Services to run emulations for.
 
 | Source          | Example                                            |
 | --------------- | :------------------------------------------------- |
-| **Flag**        | -cloud_one_gcloud_services cloudstorage,datastore  |
-| **Environment** | CLOUD_ONE_GCLOUD_SERVICES=cloudstorage,datastore   |
-| **File**        | cloud_one_gcloud_services cloudstorage,datastore   |
+| **Flag**        | -cloud_uno_gcloud_services cloudstorage,datastore  |
+| **Environment** | CLOUD_UNO_GCLOUD_SERVICES=cloudstorage,datastore   |
+| **File**        | cloud_uno_gcloud_services cloudstorage,datastore   |
 
 ### Azure Services
 
@@ -131,9 +131,9 @@ Azure Services to run emulations for.
 
 | Source          | Example                                   |
 | --------------- | :---------------------------------------- |
-| **Flag**        | -cloud_one_azure_services storage,cosmos  |
-| **Environment** | CLOUD_ONE_AZURE_SERVICES=storage,cosmos   |
-| **File**        | cloud_one_azure_services storage,cosmos   |
+| **Flag**        | -cloud_uno_azure_services storage,cosmos  |
+| **Environment** | CLOUD_UNO_AZURE_SERVICES=storage,cosmos   |
+| **File**        | cloud_uno_azure_services storage,cosmos   |
 
 ### Debug
 
@@ -165,37 +165,37 @@ Docker compose example:
 ```yaml
 version: "3.9"
 services:
-  cloudone:
-    image: cloudone
+  clouduno:
+    image: clouduno
     environment:
       # Set to use an in-memory file system
       # for all cloud::1 services that are custom emulators.
       # (This won't take effect for most emulator APIs as they are wrappers around open source software or vendor-provided emulators)
-      CLOUD_ONE_FILE_SYSTEM: "memory" # Defaults to OS
-      CLOUD_ONE_DATA_DIR: /lib/path/to/custom/data # Defaults to /lib/data
+      CLOUD_UNO_FILE_SYSTEM: "memory" # Defaults to OS
+      CLOUD_UNO_DATA_DIR: /lib/path/to/custom/data # Defaults to /lib/data
       # Enable to show all the debug logs.
       DEBUG: true
       # AWS services to run.
-      CLOUD_ONE_AWS_SERVICES: s3,dynamodb
+      CLOUD_UNO_AWS_SERVICES: s3,dynamodb
       # Google cloud services to run.
-      CLOUD_ONE_GCLOUD_SERVICES: cloudstorage,datastore
+      CLOUD_UNO_GCLOUD_SERVICES: cloudstorage,datastore
       # Azure services to run.
-      CLOUD_ONE_AZURE_SERVICES: storage,cosmos
+      CLOUD_UNO_AZURE_SERVICES: storage,cosmos
     ports:
       # Expose on port 80 on the host as due to the static ip
       # there won't be any conflicts.
       - "80:5988"
     networks:
-      cloudone:
+      clouduno:
         ipv4_address: 172.18.0.22
     volumes:
      - 'host/path/to/custom/data:/lib/path/to/custom/data'
       - '/var/run/docker.sock:/var/run/docker.sock'
       # In order to make use of this you will need to make sure the host agent
       # has been installed and is running.
-      - '/var/run/cloudone.sock:/var/run/cloudone.sock'
+      - '/var/run/clouduno.sock:/var/run/clouduno.sock'
 networks:
-  cloudone:
+  clouduno:
     driver: bridge
     ipam:
       driver: default

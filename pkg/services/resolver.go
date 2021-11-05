@@ -5,13 +5,13 @@ import (
 	"log"
 
 	"github.com/docker/docker/client"
-	"github.com/freshwebio/cloud-one/pkg/config"
-	"github.com/freshwebio/cloud-one/pkg/gcloud/grpc"
-	"github.com/freshwebio/cloud-one/pkg/gcloud/storage"
-	"github.com/freshwebio/cloud-one/pkg/hosts"
-	"github.com/freshwebio/cloud-one/pkg/netutils"
-	"github.com/freshwebio/cloud-one/pkg/types"
-	"github.com/freshwebio/cloud-one/pkg/utils"
+	"github.com/freshwebio/cloud-uno/pkg/config"
+	"github.com/freshwebio/cloud-uno/pkg/gcloud/grpc"
+	"github.com/freshwebio/cloud-uno/pkg/gcloud/storage"
+	"github.com/freshwebio/cloud-uno/pkg/hosts"
+	"github.com/freshwebio/cloud-uno/pkg/netutils"
+	"github.com/freshwebio/cloud-uno/pkg/types"
+	"github.com/freshwebio/cloud-uno/pkg/utils"
 	"github.com/spf13/afero"
 )
 

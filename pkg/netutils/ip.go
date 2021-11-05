@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/freshwebio/cloud-one/pkg/config"
+	"github.com/freshwebio/cloud-uno/pkg/config"
 )
 
 // DefaultContainerServerIP provides the default ip address

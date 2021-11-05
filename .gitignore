@@ -16,8 +16,8 @@ data
 
 # Cloud::1 application binaries
 main
-cloudone-hostagent
-cloudone-server
+clouduno-hostagent
+clouduno-server
 
 # Dependency directories (remove the comment below to include it)
 # vendor/

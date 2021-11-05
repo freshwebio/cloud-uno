@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/freshwebio/cloud-one/pkg/httputils"
-	"github.com/freshwebio/cloud-one/pkg/types"
+	"github.com/freshwebio/cloud-uno/pkg/httputils"
+	"github.com/freshwebio/cloud-uno/pkg/types"
 	"github.com/gorilla/mux"
 
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"

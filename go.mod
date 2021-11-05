@@ -1,4 +1,4 @@
-module github.com/freshwebio/cloud-one
+module github.com/freshwebio/cloud-uno
 
 go 1.15
 

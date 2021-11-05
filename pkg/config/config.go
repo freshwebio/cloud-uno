@@ -45,7 +45,7 @@ func prepare(flagSet *flag.FlagSet) *Config {
 	var fileSystem string
 	flagSet.StringVar(
 		&fileSystem,
-		"cloud_one_file_system",
+		"cloud_uno_file_system",
 		"",
 		"The file system to use for Cloud::1 custom emulators, the only choice is memory."+
 			" Any other value will mean the os is used.",
@@ -54,7 +54,7 @@ func prepare(flagSet *flag.FlagSet) *Config {
 	var dataDirectory string
 	flagSet.StringVar(
 		&dataDirectory,
-		"cloud_one_data_dir",
+		"cloud_uno_data_dir",
 		"/lib/data",
 		"The location in the docker container to store all the data for the cloud service emulators. "+
 			"(If your file system is set to memory, then not all data for services will be persisted to disk)",
@@ -63,7 +63,7 @@ func prepare(flagSet *flag.FlagSet) *Config {
 	var runOnHost bool
 	flagSet.BoolVar(
 		&runOnHost,
-		"cloud_one_run_on_host",
+		"cloud_uno_run_on_host",
 		false,
 		"If set, this will enable in-process features that are only available to privileged host applications. "+
 			"It will also embed the functionality to interact with the os hosts file in-process as opposed to in "+
@@ -73,7 +73,7 @@ func prepare(flagSet *flag.FlagSet) *Config {
 	var serverIP string
 	flagSet.StringVar(
 		&serverIP,
-		"cloud_one_ip",
+		"cloud_uno_ip",
 		"172.18.0.22",
 		"The IP Address the cloud one server is running on, this is ignored when running the server directly on the host.",
 	)
@@ -81,7 +81,7 @@ func prepare(flagSet *flag.FlagSet) *Config {
 	var hostsPath string
 	flagSet.StringVar(
 		&hostsPath,
-		"cloud_one_hosts_path",
+		"cloud_uno_hosts_path",
 		"",
 		"A custom path to the hosts file on the host machine,"+
 			" otherwise defaults to the correct hosts file for the OS the host agent/server directly on the host is running on.",
@@ -90,7 +90,7 @@ func prepare(flagSet *flag.FlagSet) *Config {
 	var awsServices string
 	flagSet.StringVar(
 		&awsServices,
-		"cloud_one_aws_services",
+		"cloud_uno_aws_services",
 		"",
 		"AWS Services to run emulations for.",
 	)
@@ -98,7 +98,7 @@ func prepare(flagSet *flag.FlagSet) *Config {
 	var gcloudServices string
 	flagSet.StringVar(
 		&awsServices,
-		"cloud_one_gcloud_services",
+		"cloud_uno_gcloud_services",
 		"",
 		"Google Cloud Services to run emulations for.",
 	)
@@ -106,7 +106,7 @@ func prepare(flagSet *flag.FlagSet) *Config {
 	var azureServices string
 	flagSet.StringVar(
 		&azureServices,
-		"cloud_one_azure_services",
+		"cloud_uno_azure_services",
 		"",
 		"Azure Services to run emulations for.",
 	)

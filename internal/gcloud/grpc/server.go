@@ -3,7 +3,7 @@ package grpc
 import (
 	"net"
 
-	"github.com/freshwebio/cloud-one/pkg/types"
+	"github.com/freshwebio/cloud-uno/pkg/types"
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 	"google.golang.org/grpc"
 )

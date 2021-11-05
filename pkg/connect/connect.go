@@ -1,5 +1,5 @@
 package connect
 
 // SockAddr provides the socket address for communication between
-// cloudone processes.
-const SockAddr = "/var/run/cloudone.sock"
+// clouduno processes.
+const SockAddr = "/var/run/clouduno.sock"

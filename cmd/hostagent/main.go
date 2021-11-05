@@ -8,9 +8,9 @@ import (
 	"net/rpc"
 	"os"
 
-	"github.com/freshwebio/cloud-one/pkg/config"
-	"github.com/freshwebio/cloud-one/pkg/connect"
-	"github.com/freshwebio/cloud-one/pkg/hosts"
+	"github.com/freshwebio/cloud-uno/pkg/config"
+	"github.com/freshwebio/cloud-uno/pkg/connect"
+	"github.com/freshwebio/cloud-uno/pkg/hosts"
 )
 
 func main() {
