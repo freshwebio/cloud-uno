@@ -1,0 +1,12 @@
+version: "3.6"
+
+services:
+  clouduno_test_db:
+    image: postgres:12-alpine
+    restart: always
+    ports:
+      - 65432:5432
+    environment:
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: pgpassword
+      POSTGRES_DB: clouduno

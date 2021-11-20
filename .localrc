@@ -1,0 +1,4 @@
+export CLOUD_UNO_AWS_SERVICES=s3,dynamodb
+export CLOUD_UNO_GCLOUD_SERVICES=cloudstorage,datastore,secretmanager
+export CLOUD_UNO_AZURE_SERVICES=storage,cosmos
+export CLOUD_UNO_SOCKET=/var/run/clouduno.sock
