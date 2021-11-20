@@ -4,23 +4,28 @@ Parameters
 
 Licensor:             FRESHWEB LTD.
 Licensed Work:        CloudUno 1.0
-                      The Licensed Work is (c) 2021 FRESHWEB LTD.
+                      The Licensed Work is (c) 2022 FRESHWEB LTD.
 Additional Use Grant: You may make use of the Licensed Work, provided that
-                      you may not use the Licensed Work for a Cloud Provider Emulation
+                      you may not use the Licensed Work for a Managed Cloud Provider Emulation
                       Service.
 
-                      A “Cloud Provider Emulation Service” is a commercial offering that
+                      A “Managed Cloud Provider Emulation Service” is a commercial offering that
                       allows third parties (other than your employees and
                       contractors) to access the functionality of the
                       Licensed Work so that such third parties directly benefit from
-                      the cloud provider emulation features of the Licensed Work.
+                      the cloud-hosted emulator state, emulator state synchronisation and emulator state sharing features
+                      that would be managed on behalf of such third parties.
 
-Change Date:          2024-11-05
+Change Date:          2025-02-30. Change date is three years from release date.
 
-Change License:       Apache License, Version 2.0
+Change License:       Apache License, Version 2.0 (see licenses/LICENSE-Apache-2.0)
 
-For information about alternative licensing arrangements for the Software,
-please visit: https://clouduno.io/pricing
+If you would like to use the Licensed Work in any way that conflicts with the stipulations
+of the Additional Use Grant, please contact Freshweb Ltd. at contact@freshweb.io
+to obtain an alternative license.
+
+For more information on the use of the Business Source License, please visit the
+Adopting and Developing Business Source License FAQ at https://mariadb.com/bsl-faq-adopting
 
 Notice
 
