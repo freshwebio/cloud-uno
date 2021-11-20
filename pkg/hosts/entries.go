@@ -1,3 +1,11 @@
+// Copyright (c) 2022 FRESHWEB LTD.
+// Use of this software is governed by the Business Source License
+// included in the file LICENSE
+// As of the Change Date specified in that file, in accordance with
+// the Business Source License, use of this software will be governed
+// by the Apache License, Version 2.0, included in the file
+// licenses/LICENSE-Apache-2.0
+
 package hosts
 
 import (
@@ -17,6 +25,7 @@ type Entry struct {
 	Raw     string
 	Err     error
 	Comment string
+	marks   []string
 }
 
 // NewEntry creates a new host entry.
@@ -64,6 +73,22 @@ func (e *Entry) Export() string {
 	}
 
 	return fmt.Sprintf("%s %s%s", e.IP, strings.Join(e.Hosts, " "), comment)
+}
+
+func (e *Entry) Mark(mark string) {
+	e.marks = append(e.marks, mark)
+}
+
+// IsMarkedWith checks whether an entry
+// has been marked with the provided string.
+func (e *Entry) IsMarkedWith(mark string) bool {
+	hasMark := false
+	i := 0
+	for !hasMark && i < len(e.marks) {
+		hasMark = e.marks[i] == mark
+		i += 1
+	}
+	return hasMark
 }
 
 // RemoveDuplicateHosts deals with cleaning up
@@ -124,4 +149,15 @@ func (e *Entry) IsMalformed() bool {
 // RegenerateExport deals with regenerating the host entry in it's raw format.
 func (e *Entry) RegenerateExport() {
 	e.Raw = fmt.Sprintf("%s %s", e.IP, strings.Join(e.Hosts, " "))
+}
+
+// InsertIntoSlice inserts a given hosts entry at a specified
+// index into a slice.
+func InsertIntoSlice(slice []Entry, index int, value Entry) []Entry {
+	if len(slice) == index {
+		return append(slice, value)
+	}
+	newSlice := append(slice[:index+1], slice[index:]...)
+	newSlice[index] = value
+	return newSlice
 }

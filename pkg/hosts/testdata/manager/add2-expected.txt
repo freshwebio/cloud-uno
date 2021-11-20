@@ -1,0 +1,16 @@
+127.0.0.1 localhost
+::1 localhost
+255.255.255.255 broadcasthost
+
+127.0.0.1 example1-local.com app.example1-local.com api.example1-local.com analytics.example1-local.com
+127.0.0.1 local.example2.io api.local.example2.io player.local.example2.io
+
+# Added by Docker Desktop
+# To allow the same kube context to work on the host and the container:
+127.0.0.1 kubernetes.docker.internal
+# End of section
+
+127.0.0.1 someappdaemon.com
+# Added by Cloud::1
+172.18.0.22 s3.aws.local
+# End of Cloud::1 section
