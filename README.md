@@ -1,5 +1,7 @@
 ![Cloud Uno](/resources/logo.svg)
 
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=freshwebio_cloud-uno&metric=coverage)](https://sonarcloud.io/summary/new_code?id=freshwebio_cloud-uno) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=freshwebio_cloud-uno&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=freshwebio_cloud-uno) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=freshwebio_cloud-uno&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=freshwebio_cloud-uno) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=freshwebio_cloud-uno&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=freshwebio_cloud-uno)
+
 Cloud::1 enables running cloud services on your local machine for faster, cheaper, end-to-end development.
 
 *If you were wondering, the name Cloud::1 (cloud uno) is derived from the ::1 IPv6 address that is the shorthand for the loopback localhost ip.*
@@ -174,7 +176,7 @@ services:
       CLOUD_UNO_FILE_SYSTEM: "memory" # Defaults to OS
       CLOUD_UNO_DATA_DIR: /lib/path/to/custom/data # Defaults to /lib/data
       # Enable to show all the debug logs.
-      DEBUG: true
+      DEBUG: '1'
       # AWS services to run.
       CLOUD_UNO_AWS_SERVICES: s3,dynamodb
       # Google cloud services to run.
@@ -191,9 +193,6 @@ services:
     volumes:
      - 'host/path/to/custom/data:/lib/path/to/custom/data'
       - '/var/run/docker.sock:/var/run/docker.sock'
-      # In order to make use of this you will need to make sure the host agent
-      # has been installed and is running.
-      - '/var/run/clouduno.sock:/var/run/clouduno.sock'
 networks:
   clouduno:
     driver: bridge
@@ -225,8 +224,24 @@ that support gRPC.
 
 All http endpoints are not secure unless you create your own reverse proxy that terminates with TLS, so use "http://" as the protocol for every endpoint.
 
-*The square brackets represent the service name that can be used in configuration when selecting services to run.*
+*The square brackets `[.*]` represent the service name that can be used in configuration when selecting services to run.*
 
-- [Secret Manager](https://cloud.google.com/secret-manager/docs/apis) [secretmanager] (HTTP, gRPC) - secretmanager.googleapis.local:5988/v1/
-- [API Gateway](https://cloud.google.com/api-gateway/docs/apis) [apigateway] (HTTP) - apigateway.googleapis.local:5988/v1beta/
-- [Cloud Storage](https://cloud.google.com/storage/docs/json_api) [storage] (HTTP) - storage.googleapis.local:5988/storage/v1/
+*The parentheses `(.*)` represent the port to connect to when running directly on the host and not in Docker or behind a reverse proxy.*
+
+
+| Service       | Protocols     |  Endpoint  |
+| ------------- | ------------- | ---------------------------- |
+|  [Secret Manager](https://cloud.google.com/secret-manager/docs/apis) [secretmanager]  | HTTP, gRPC  | secretmanager.googleapis.local(:5988)/v1/ |
+| [API Gateway](https://cloud.google.com/api-gateway/docs/apis) [apigateway] | HTTP | apigateway.googleapis.local(:5988)/v1beta/ |
+| [Cloud Storage](https://cloud.google.com/storage/docs/json_api) [storage] | HTTP | storage.googleapis.local(:5988)/storage/v1/ |
+
+
+## Contributing
+
+The following are a set of useful resources and docs for contributing to this project:
+
+- [Contributing guidelines](/docs/CONTRIB_GUIDELINES.md)
+- [General contributing help and pointers](/docs/CONTRIB.md)
+- [Local development environment and tests](/docs/CONTRIB_DEV.md)
+- [Debugging and local development environment tips](/docs/CONTRIB_DEBUGGING.md)
+- [Contributing and licensing](/docs/CONTRIB_LICENSING.md)
