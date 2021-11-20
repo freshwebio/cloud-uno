@@ -9,7 +9,7 @@
 - `chore:` - Should be used for tasks such as releases or patching dependencies.
 - `ci:` - Should be used for any work on GitHub Action workflows or scripts used in CI.
 - `docs:`- Should be used for adding or modifying documentation.
-- `style:` - Should be used for code formatting commits.
+- `style:` - Should be used for code formatting commits and linting fixes.
 - `refactor:` - Should be used for any type of refactoring work that is not a part of a feature or bug fix.
 - `perf:` - Should be used for a commit that represents performance improvements.
 - `test:` - Should be used for commits that are purely for automated tests.
