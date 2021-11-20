@@ -22,6 +22,8 @@ var (
 	ErrMissingOrInvalidFS = errors.New("file system service missing in resolver container or is of an unexpected type")
 )
 
+// RegisterServices deals with registering core
+// services to be used throughout the application.
 func RegisterServices(resolver types.Resolver) error {
 	cfg, ok := resolver.Get("config").(*config.Config)
 	if !ok {
