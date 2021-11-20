@@ -11,13 +11,24 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# Data directory
+# Coverage and test report files
+report.json
+coverage.txt
+
+# Data directories
 data
+__localdata
 
 # Cloud::1 application binaries
 main
 clouduno-hostagent
 clouduno-server
+
+# Output directories
+tmp-*
+
+# Log files
+*.log
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
