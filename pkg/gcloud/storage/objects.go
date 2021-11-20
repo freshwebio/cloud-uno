@@ -8,6 +8,9 @@
 
 package storage
 
+// Objects represents a service
+// that deals with managing objects
+// in a Google Cloud Storage API emulation.
 type Objects interface {
 	Compose()
 	Copy()

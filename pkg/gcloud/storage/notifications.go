@@ -8,6 +8,9 @@
 
 package storage
 
+// Notifications represents a service
+// that deals with managing notifications in a Google Cloud Storage API
+// emulation.
 type Notifications interface {
 	Delete()
 	Get()

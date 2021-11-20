@@ -8,6 +8,9 @@
 
 package storage
 
+// DefaultObjectAccessControls represents a service
+// that deals with managing default object access controls
+// in a Google Cloud Storage API emulation.
 type DefaultObjectAccessControls interface {
 	DeleteDefaultObjectAccessControl()
 	GetDefaultObjectAccessControl()

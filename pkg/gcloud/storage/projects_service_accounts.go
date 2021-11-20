@@ -8,6 +8,9 @@
 
 package storage
 
+// ProjectsServiceAccounts represents a service
+// that deals with managing project service accounts
+// in a Google Cloud Storage API emulation.
 type ProjectsServiceAccounts interface {
 	Get()
 }

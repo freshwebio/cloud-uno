@@ -8,6 +8,9 @@
 
 package storage
 
+// Channels represents a service
+// that deals with managing channels in a Google Cloud Storage API
+// emulation.
 type Channels interface {
 	Stop()
 }

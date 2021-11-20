@@ -8,6 +8,9 @@
 
 package storage
 
+// Buckets represents a service
+// that deals with managing buckets in a Google Cloud Storage API
+// emulation.
 type Buckets interface {
 	Delete()
 	Get()

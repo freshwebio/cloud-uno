@@ -8,6 +8,9 @@
 
 package storage
 
+// ObjectAccessControls represents a service
+// that deals with managing object access controls
+// in a Google Cloud Storage API emulation.
 type ObjectAccessControls interface {
 	Delete()
 	Get()
