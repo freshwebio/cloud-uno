@@ -1,0 +1,39 @@
+version: "3.9"
+services:
+  clouduno:
+    image: cosmtrek/air
+    # Make sure air uses the server config.
+    command: -c .air.server.toml
+    environment:
+      # Set to use an in-memory file system
+      # for all cloud::1 services that are custom emulators.
+      # (This won't take effect for most emulator APIs as they are wrappers around open source software or vendor-provided emulators)
+      CLOUD_UNO_FILE_SYSTEM: "memory" # Defaults to OS
+      CLOUD_UNO_DATA_DIR: /lib/data # Defaults to /lib/data
+      # Enable to show all the debug logs.
+      DEBUG: '1'
+      # AWS services to run.
+      CLOUD_UNO_AWS_SERVICES: s3,dynamodb
+      # Google cloud services to run.
+      CLOUD_UNO_GCLOUD_SERVICES: cloudstorage,datastore,secretmanager
+      # Azure services to run.
+      CLOUD_UNO_AZURE_SERVICES: storage,cosmos
+    working_dir: /go/src/github.com/freshwebio/cloud-uno
+    ports:
+      # Expose on port 80 on the host as due to the static ip
+      # there won't be any conflicts.
+      - "80:5988"
+    networks:
+      clouduno:
+        ipv4_address: 172.18.0.22
+    volumes:
+      - '.:/go/src/github.com/freshwebio/cloud-uno'
+      - './__localdata:/lib/data'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+networks:
+  clouduno:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.18.0.0/16
