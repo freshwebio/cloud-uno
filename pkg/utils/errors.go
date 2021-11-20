@@ -6,13 +6,12 @@
 // by the Apache License, Version 2.0, included in the file
 // licenses/LICENSE-Apache-2.0
 
-package storage
+package utils
 
-type ObjectAccessControls interface {
-	Delete()
-	Get()
-	Create()
-	List()
-	Patch()
-	Update()
-}
+import "errors"
+
+var (
+	// ErrMissingOrInvalidLogger provides an error that should be used
+	// upon failure to get the logger from a service resolver.
+	ErrMissingOrInvalidLogger = errors.New("the logger service is either missing or is of an unexpected type")
+)

@@ -1,3 +1,11 @@
+// Copyright (c) 2022 FRESHWEB LTD.
+// Use of this software is governed by the Business Source License
+// included in the file LICENSE
+// As of the Change Date specified in that file, in accordance with
+// the Business Source License, use of this software will be governed
+// by the Apache License, Version 2.0, included in the file
+// licenses/LICENSE-Apache-2.0
+
 package main
 
 import (
@@ -5,6 +13,7 @@ import (
 	"net"
 	"net/http"
 
+	"github.com/freshwebio/cloud-uno/internal/coresvc"
 	"github.com/freshwebio/cloud-uno/internal/gcloud/grpc"
 	"github.com/freshwebio/cloud-uno/internal/gcloud/httpapi"
 	"github.com/freshwebio/cloud-uno/pkg/services"
@@ -24,7 +33,7 @@ func httpServe(l net.Listener, resolver types.Resolver) error {
 
 func main() {
 	resolver := services.NewDefaultResolver()
-	err := resolver.Register()
+	err := resolver.Register(coresvc.RegisterServices)
 	if err != nil {
 		log.Fatal(err)
 	}

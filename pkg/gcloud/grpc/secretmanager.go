@@ -1,3 +1,11 @@
+// Copyright (c) 2022 FRESHWEB LTD.
+// Use of this software is governed by the Business Source License
+// included in the file LICENSE
+// As of the Change Date specified in that file, in accordance with
+// the Business Source License, use of this software will be governed
+// by the Apache License, Version 2.0, included in the file
+// licenses/LICENSE-Apache-2.0
+
 package grpc
 
 import (
@@ -41,7 +49,11 @@ func NewSecretManager(dataRootDir string, fs afero.Fs, ip string, hostsService h
 	if err != nil {
 		return nil, err
 	}
-	err = hostsService.Add(&ip, &secretManagerLocalHost)
+
+	err = hostsService.Add(&hosts.HostsParams{
+		IP:    &ip,
+		Hosts: &secretManagerLocalHost,
+	})
 	if err != nil {
 		return nil, err
 	}
