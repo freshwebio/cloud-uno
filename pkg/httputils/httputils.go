@@ -58,3 +58,15 @@ func HTTPErrorFromGRPC(w http.ResponseWriter, err error) {
 		message,
 	)
 }
+
+// InvalidRequestMessage produces a message to be used in an error response
+// for an invalid request, most likely due to an malformed request body.
+func InvalidRequestMessage(err error) string {
+	return fmt.Sprintf("Invalid request: %s", err.Error())
+}
+
+// SetResponseAsJSON sets the "Content-Type" header for a JSON
+// response.
+func SetResponseAsJSON(w http.ResponseWriter) {
+	w.Header().Set("Content-Type", "application/json")
+}
