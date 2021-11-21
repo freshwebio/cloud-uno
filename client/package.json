@@ -19,7 +19,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "yarn clean && craco build",
     "test": "craco test",
     "test:debug": "craco test --runInBand",
     "lint:report": "eslint --max-warnings 10 --ext .js,.jsx,.ts,.tsx src/ -f json -o lintreport.json",
