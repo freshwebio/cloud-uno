@@ -18,6 +18,7 @@ import (
 
 	"github.com/dimchansky/utfbom"
 	"github.com/freshwebio/cloud-uno/pkg/config"
+	"github.com/freshwebio/cloud-uno/pkg/netutils"
 	"github.com/sirupsen/logrus"
 )
 
@@ -54,6 +55,14 @@ func NewManager(cfg *config.Config, logger *logrus.Entry) (Service, error) {
 }
 
 func (m *Manager) load() error {
+	// The first thing a host manager does is to make sure there is an alias
+	// to the loopback address so that when the server is running in Docker
+	// with a static IP that it can be accessed from the host by that IP.
+	// (e.g. opening the cloud uno console in the browser)
+	err := netutils.CreateLoopBackAlias(netutils.DefaultContainerServerIP)
+	if err != nil {
+		return err
+	}
 	file, err := os.Open(m.Path)
 	if err != nil {
 		return err

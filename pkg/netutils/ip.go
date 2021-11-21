@@ -11,6 +11,8 @@ package netutils
 import (
 	"fmt"
 	"net"
+	"os/exec"
+	"runtime"
 
 	"github.com/freshwebio/cloud-uno/pkg/config"
 )
@@ -31,10 +33,7 @@ func SelectServerIP(cfg *config.Config) (string, error) {
 		ip := *cfg.ServerIP
 		// Only validate IP when a custom IP has been provided.
 		if net.ParseIP(ip) == nil {
-			return "", fmt.Errorf(
-				"Invalid IP address %s provided for the ip the server is running on",
-				ip,
-			)
+			return "", invalidIPError(ip)
 		}
 		return ip, nil
 	}
@@ -42,4 +41,35 @@ func SelectServerIP(cfg *config.Config) (string, error) {
 		return DefaultHostServerIP, nil
 	}
 	return DefaultContainerServerIP, nil
+}
+
+// CreateLoopBackAlias deals with creating an alias for the loopback
+// address so that we can assign a virtual static IP to a docker container
+// running the Cloud::1 server.
+// This prevents cloud uno from having conflicts with any other servers you may
+// have running on port 80 on your local machine and allows us to channel
+// all cloud uno host names to a separate IP.
+// This is ONLY supported for linux and darwin platforms!
+func CreateLoopBackAlias(ip string) error {
+	// Make sure the IP is safe to inject by making sure it's a valid IP.
+	if net.ParseIP(ip) == nil {
+		return invalidIPError(ip)
+	}
+
+	if runtime.GOOS == "darwin" {
+		cmd := exec.Command("/bin/sh", "-c", fmt.Sprintf("sudo ifconfig lo0 alias %s", ip))
+		return cmd.Run()
+	} else if runtime.GOOS == "linux" {
+		// sudo ifconfig eth0:0 {ip} netmask 255.255.255.0 up
+		cmd := exec.Command("/bin/sh", "-c", fmt.Sprintf("sudo ifconfig eth0:0 %s netmask 255.255.255.0 up", ip))
+		return cmd.Run()
+	}
+	return nil
+}
+
+func invalidIPError(ip string) error {
+	return fmt.Errorf(
+		"invalid IP address %s provided for the ip the server is running on",
+		ip,
+	)
 }
