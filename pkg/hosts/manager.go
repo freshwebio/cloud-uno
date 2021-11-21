@@ -186,20 +186,11 @@ func (m *Manager) Remove(params *Params) error {
 		if entry.Err != nil || !entry.IsMarkedWith(cloudUnoEntryMark) || entry.IsComment() || entry.IP != *params.IP {
 			outputEntries = append(outputEntries, entry)
 		} else {
-			var newHosts []string
-			for _, checkHost := range entry.Hosts {
-				if !itemInSlice(checkHost, hostsList) {
-					newHosts = append(newHosts, checkHost)
-				}
-			}
+			newHosts := removeEntryHosts(entry, hostsList)
 
 			// If hosts is empty, skip the line completely.
 			if len(newHosts) > 0 {
-				newLineRaw := entry.IP
-
-				for _, host := range newHosts {
-					newLineRaw = fmt.Sprintf("%s %s", newLineRaw, host)
-				}
+				newLineRaw := addHostsToLine(entry, newHosts)
 				newEntry := NewEntry(newLineRaw)
 				outputEntries = append(outputEntries, newEntry)
 			}
@@ -324,4 +315,24 @@ func isOpenCommentEntry(entry Entry) bool {
 
 func isCloseCommentEntry(entry Entry) bool {
 	return entry.IsComment() && normaliseComment(entry.Raw) == cloudUnoCloseComment
+}
+
+func removeEntryHosts(entry Entry, hostsList []string) []string {
+	var newHosts []string
+	for _, checkHost := range entry.Hosts {
+		if !itemInSlice(checkHost, hostsList) {
+			newHosts = append(newHosts, checkHost)
+		}
+	}
+	return newHosts
+}
+
+func addHostsToLine(entry Entry, newHosts []string) string {
+	newLineRaw := entry.IP
+
+	for _, host := range newHosts {
+		newLineRaw = fmt.Sprintf("%s %s", newLineRaw, host)
+	}
+
+	return newLineRaw
 }
