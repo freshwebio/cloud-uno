@@ -16,6 +16,7 @@ import (
 	"github.com/freshwebio/cloud-uno/internal/coresvc"
 	"github.com/freshwebio/cloud-uno/internal/gcloud/grpc"
 	"github.com/freshwebio/cloud-uno/internal/gcloud/httpapi"
+	"github.com/freshwebio/cloud-uno/internal/webserver"
 	"github.com/freshwebio/cloud-uno/pkg/services"
 	"github.com/freshwebio/cloud-uno/pkg/types"
 	"github.com/gorilla/mux"
@@ -26,6 +27,10 @@ import (
 func httpServe(l net.Listener, resolver types.Resolver) error {
 	mux := mux.NewRouter()
 	httpapi.RegisterSecretManager(mux, resolver)
+	err := webserver.RegisterStatic(mux, resolver)
+	if err != nil {
+		return err
+	}
 
 	s := &http.Server{Handler: mux}
 	return s.Serve(l)
