@@ -1,7 +1,8 @@
 version: "3.9"
 services:
   clouduno:
-    image: cosmtrek/air
+    # Fork of cosmtrek/air using go 1.17 with support for //go:build directives.
+    image: freshwebio/air
     # Make sure air uses the server config.
     command: -c .air.server.toml
     environment:
