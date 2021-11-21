@@ -159,6 +159,13 @@ if [ -n "$TEST_TYPES" ]; then
 else
   source .localrc
 
+  # Regardless if the server is running in Docker or not, we need to build the client on the host machine
+  # as the docker image used to run the development Docker server does not have nodejs and npm installed.
+  pushd client
+  echo "Building client (You will need to re-build the client with \"yarn build\" to reflect any changes you make) ..."
+  yarn build
+  popd
+
   echo "Starting the live-reload Cloud::1 host agent as root ..."
   # The host agent should be running as root user as it manipulates the hosts file.
   sudo bash -c "source .localrc && air -c .air.hostagent.toml 2>&1 > air-hostagent.log &"
