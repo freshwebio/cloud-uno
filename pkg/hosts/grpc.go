@@ -30,6 +30,9 @@ func NewGRPCClient(hostAgentAddr string) (Service, error) {
 	// to be running as the server starts up.
 	conn, err := grpc.Dial(
 		hostAgentAddr,
+		// This is designed for a developer's local machine, so insecure gRPC
+		// is acceptable as long as this software is not used on a public network!
+		grpc.WithInsecure(),
 		grpc.WithConnectParams(
 			grpc.ConnectParams{
 				MinConnectTimeout: 10 * time.Second,
