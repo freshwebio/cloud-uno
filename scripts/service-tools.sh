@@ -79,39 +79,43 @@ fi
 function finish {
   # Make every test run repeatable by ensuring we tear down the dependencies.
   # Optionally, clean up when running locally if desired.
-  if [ -n "$TEST_TYPES" ]; then
+  if [ -n "$TEST_TYPES" ] && [ "$TEST_TYPES" != "unit" ]; then
     compose_file="docker-compose.tests.yml"
   elif [ -n "$CLEAN_UP_LOCAL_RUN" ]; then
     compose_file="docker-compose.local.yml"
   fi
 
-  if [ -n "$TEST_TYPES" ] || [ -n "$CLEAN_UP_LOCAL_RUN" ]; then
+  if ([ -n "$TEST_TYPES" ] && [ "$TEST_TYPES" != "unit" ]) || [ -n "$CLEAN_UP_LOCAL_RUN" ]; then
     echo "Tearing down docker dependencies ..."
     docker-compose --file $compose_file stop
     docker-compose --file $compose_file rm -v -f
   fi
 
-  echo "Tearing down the local server docker container if needed ..."
-  # If the server is running in docker then let's make sure we stop it.
-  docker-compose --file docker-compose.server-local.yml stop
-  docker-compose --file docker-compose.server-local.yml rm -v -f
+  if [ -z "$TEST_TYPES" ]; then
+    echo "Tearing down the local server docker container if needed ..."
+    # If the server is running in docker then let's make sure we stop it.
+    docker-compose --file docker-compose.server-local.yml stop
+    docker-compose --file docker-compose.server-local.yml rm -v -f
 
-  # Kill the Go server if it is running directly on
-  # the host.
-  server_pid=$(lsof -t -i :5988 -s TCP:LISTEN)
-  if [ -n "$server_pid" ]; then
-    echo "Killing the local server process running on the host ..."
-    # Ensure we kill the air live reload process,
-    # this will also kill the child process running the server.
-    air_pid=$(ps -o ppid= -p $server_pid)
-    if [ -n "$air_pid" ]; then
-      kill -9 $air_pid
+    # Kill the Go server if it is running directly on
+    # the host.
+    server_pid=$(lsof -t -i :5988 -s TCP:LISTEN)
+    if [ -n "$server_pid" ]; then
+      echo "Killing the local server process running on the host ..."
+      # Ensure we kill the air live reload process,
+      # this will also kill the child process running the server.
+      air_pid=$(ps -o ppid= -p $server_pid)
+      if [ -n "$air_pid" ]; then
+        kill -9 $air_pid
+      fi
     fi
   fi
 
   # Kill the host agent along with
   # the air process that controls it if it is running.
-  hostagent_air_pid=$(pgrep -f "air -c \.air\.hostagent\.toml")
+  # pgrep returns a 1 exit code if no matches are found which will fail the step
+  # in CI environments so we need to ensure it returns a 0 exit code.
+  hostagent_air_pid=$(pgrep -f "air -c \.air\.hostagent\.toml" || true)
   if [ -n "$hostagent_air_pid" ]; then
     echo "Killing the host agent ..."
     kill -9 $hostagent_air_pid
