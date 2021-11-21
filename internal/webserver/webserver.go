@@ -32,13 +32,13 @@ func RegisterStatic(router *mux.Router, resolver types.Resolver) (err error) {
 	hostsManager := resolver.Get("hosts").(hosts.Service)
 	cfg := resolver.Get("config").(*config.Config)
 
-	serverIp, err := netutils.SelectServerIP(cfg)
+	serverIP, err := netutils.SelectServerIP(cfg)
 	if err != nil {
 		return
 	}
 
 	err = hostsManager.Add(&hosts.Params{
-		IP:    &serverIp,
+		IP:    &serverIP,
 		Hosts: &WebServerHost,
 	})
 	return
