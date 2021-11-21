@@ -294,6 +294,16 @@ func (m *Manager) flush() error {
 	if err != nil {
 		return err
 	}
+	// Ensure we empty the file contents before writing
+	// the new hosts structure.
+	err = file.Truncate(0)
+	if err != nil {
+		return err
+	}
+	_, err = file.Seek(0, 0)
+	if err != nil {
+		return err
+	}
 
 	defer file.Close()
 
