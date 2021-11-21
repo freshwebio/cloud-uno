@@ -16,7 +16,7 @@ full_bin = "APP_ENV=dev APP_USER=air ./tmp-host/clouduno-hostagent"
 # Watch these filename extensions.
 include_ext = ["go", "tpl", "tmpl", "html"]
 # Ignore these filename extensions or directories.
-exclude_dir = ["tmp-host", "tmp-server", "vendor", "scripts", "__test_data"]
+exclude_dir = ["tmp-host", "tmp-server", "vendor", "scripts", "__test_data", "client"]
 # Watch these directories if you specified.
 include_dir = []
 # Exclude files.
