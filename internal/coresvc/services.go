@@ -12,6 +12,7 @@ import (
 	"errors"
 
 	"github.com/freshwebio/cloud-uno/pkg/config"
+	"github.com/freshwebio/cloud-uno/pkg/logging"
 	"github.com/freshwebio/cloud-uno/pkg/types"
 	"github.com/spf13/afero"
 )
@@ -40,5 +41,9 @@ func RegisterServices(resolver types.Resolver) error {
 		fs = afero.NewOsFs()
 	}
 	resolver.Set("fs", fs)
+
+	logger := logging.CreateLogger()
+	resolver.Set("logger", logger)
+
 	return nil
 }

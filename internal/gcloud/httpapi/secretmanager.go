@@ -11,13 +11,13 @@ package httpapi
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 
 	"github.com/freshwebio/cloud-uno/pkg/httputils"
 	"github.com/freshwebio/cloud-uno/pkg/types"
 	"github.com/gorilla/mux"
+	"github.com/sirupsen/logrus"
 
 	secretmanagerpb "google.golang.org/genproto/googleapis/cloud/secretmanager/v1"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -34,8 +34,10 @@ const (
 // RegisterSecretManager deals with registering the routes for the secret manager api.
 func RegisterSecretManager(router *mux.Router, resolver types.Resolver) {
 	secretManager := resolver.Get("gcloud.secretmanager").(secretmanagerpb.SecretManagerServiceServer)
+	logger := resolver.Get("logger").(*logrus.Entry)
 	c := &secretManagerController{
 		secretManager,
+		logger,
 	}
 	router.HandleFunc("/v1/projects/{project}/secrets/{secret:.*:addVersion}", c.AddVersion).
 		Methods("POST").Host(SecretManagerHost)
@@ -57,6 +59,7 @@ func RegisterSecretManager(router *mux.Router, resolver types.Resolver) {
 
 type secretManagerController struct {
 	secretManager secretmanagerpb.SecretManagerServiceServer
+	logger        *logrus.Entry
 }
 
 func (c *secretManagerController) AddVersion(w http.ResponseWriter, r *http.Request) {
@@ -74,7 +77,7 @@ func (c *secretManagerController) AddVersion(w http.ResponseWriter, r *http.Requ
 	secretVersionRequest := &secretmanagerpb.AddSecretVersionRequest{}
 	err = protojson.Unmarshal(requestBytes, secretVersionRequest)
 	if err != nil {
-		log.Println(err)
+		c.logger.Error(err)
 		httputils.HTTPErrorFromGRPC(w, err)
 		return
 	}
@@ -85,13 +88,13 @@ func (c *secretManagerController) AddVersion(w http.ResponseWriter, r *http.Requ
 		secretVersionRequest,
 	)
 	if err != nil {
-		log.Println(err)
+		c.logger.Error(err)
 		httputils.HTTPErrorFromGRPC(w, err)
 		return
 	}
 	responseBytes, err := protojson.Marshal(secretVersion)
 	if err != nil {
-		log.Println(err)
+		c.logger.Error(err)
 		httputils.HTTPError(
 			w, http.StatusBadRequest,
 			failedPreparingResponseMessage,
@@ -134,13 +137,13 @@ func (c *secretManagerController) Create(w http.ResponseWriter, r *http.Request)
 		createSecretRequest,
 	)
 	if err != nil {
-		log.Println(err)
+		c.logger.Error(err)
 		httputils.HTTPErrorFromGRPC(w, err)
 		return
 	}
 	responseBytes, err := protojson.Marshal(secretResponse)
 	if err != nil {
-		log.Println(err)
+		c.logger.Error(err)
 		httputils.HTTPError(
 			w, http.StatusBadRequest,
 			failedPreparingResponseMessage,
@@ -163,13 +166,13 @@ func (c *secretManagerController) ListSecrets(w http.ResponseWriter, r *http.Req
 		listSecretsRequest,
 	)
 	if err != nil {
-		log.Println(err)
+		c.logger.Error(err)
 		httputils.HTTPErrorFromGRPC(w, err)
 		return
 	}
 	responseBytes, err := protojson.Marshal(listSecretsResponse)
 	if err != nil {
-		log.Println(err)
+		c.logger.Error(err)
 		httputils.HTTPError(
 			w, http.StatusBadRequest,
 			failedPreparingResponseMessage,
@@ -193,13 +196,13 @@ func (c *secretManagerController) GetSecret(w http.ResponseWriter, r *http.Reque
 		getSecretRequest,
 	)
 	if err != nil {
-		log.Println(err)
+		c.logger.Error(err)
 		httputils.HTTPErrorFromGRPC(w, err)
 		return
 	}
 	responseBytes, err := protojson.Marshal(getSecretResponse)
 	if err != nil {
-		log.Println(err)
+		c.logger.Error(err)
 		httputils.HTTPError(
 			w, http.StatusBadRequest,
 			failedPreparingResponseMessage,
@@ -244,13 +247,13 @@ func (c *secretManagerController) UpdateSecret(w http.ResponseWriter, r *http.Re
 		updateSecretRequest,
 	)
 	if err != nil {
-		log.Println(err)
+		c.logger.Error(err)
 		httputils.HTTPErrorFromGRPC(w, err)
 		return
 	}
 	responseBytes, err := protojson.Marshal(updateSecretResponse)
 	if err != nil {
-		log.Println(err)
+		c.logger.Error(err)
 		httputils.HTTPError(
 			w, http.StatusBadRequest,
 			failedPreparingResponseMessage,
