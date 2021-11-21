@@ -10,6 +10,8 @@ package logging
 
 import "github.com/sirupsen/logrus"
 
+// CreateLogger deals with creating a logger to be used
+// throughout the application.
 func CreateLogger() *logrus.Entry {
 	return logrus.New().WithFields(logrus.Fields{})
 }

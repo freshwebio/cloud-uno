@@ -88,7 +88,7 @@ func (s *ManagerSuite) addHostsTest(c *C, fixtureName string, ip string, hosts s
 		c.FailNow()
 	}
 
-	err = manager.Add(&HostsParams{
+	err = manager.Add(&Params{
 		IP:    &ip,
 		Hosts: &hosts,
 	})
@@ -116,7 +116,7 @@ func (s *ManagerSuite) removeHostsTest(c *C, fixtureName string, ip string, host
 		c.FailNow()
 	}
 
-	err = manager.Remove(&HostsParams{
+	err = manager.Remove(&Params{
 		IP:    &ip,
 		Hosts: &hosts,
 	})

@@ -8,9 +8,9 @@
 
 package hosts
 
-// HostParams provides the parameters required
+// Params provides the parameters required
 // to add or remove a list of hosts to an IP.
-type HostsParams struct {
+type Params struct {
 	IP    *string
 	Hosts *string
 }
@@ -18,6 +18,6 @@ type HostsParams struct {
 // Service provides a common interface for a service that manages
 // os hosts, can be a server or a client.
 type Service interface {
-	Add(params *HostsParams) error
-	Remove(params *HostsParams) error
+	Add(params *Params) error
+	Remove(params *Params) error
 }

@@ -95,13 +95,13 @@ func (m *Manager) getIPPosition(ip string) int {
 		if !entry.IsComment() && entry.IsMarkedWith(cloudUnoEntryMark) && entry.Raw != "" && entry.IP == ip {
 			position = i
 		}
-		i += 1
+		i++
 	}
 	return position
 }
 
 // Add one or more host entries.
-func (m *Manager) Add(params *HostsParams) error {
+func (m *Manager) Add(params *Params) error {
 	if net.ParseIP(*params.IP) == nil {
 		return fmt.Errorf("%q is an invalid IP address", *params.IP)
 	}
@@ -167,13 +167,13 @@ func (m *Manager) getCloseCloudUnoSectionPosition() int {
 		if m.Entries[i].Raw == fmt.Sprintf("# %s", cloudUnoCloseComment) {
 			position = i
 		}
-		i += 1
+		i++
 	}
 	return position
 }
 
 // Remove one or more host entries.
-func (m *Manager) Remove(params *HostsParams) error {
+func (m *Manager) Remove(params *Params) error {
 	var outputEntries []Entry
 	hostsList := strings.Split(*params.Hosts, ",")
 	if net.ParseIP(*params.IP) == nil {
@@ -224,7 +224,7 @@ func (m *Manager) removeCloudUnoSection() {
 		if !isCloudUnoSectionComment {
 			newEntries = append(newEntries, entry)
 		}
-		i += 1
+		i++
 	}
 	m.Entries = newEntries
 }
@@ -239,7 +239,7 @@ func (m *Manager) hasMarkedEntries() bool {
 		// uno section.
 		isCloudUnoSectionComment := isOpenCommentEntry(entry) || isCloseCommentEntry(entry)
 		hasMarkedEntry = entry.IsMarkedWith(cloudUnoEntryMark) && !isCloudUnoSectionComment
-		i += 1
+		i++
 	}
 	return hasMarkedEntry
 }

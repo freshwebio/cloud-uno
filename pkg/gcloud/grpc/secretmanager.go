@@ -50,7 +50,7 @@ func NewSecretManager(dataRootDir string, fs afero.Fs, ip string, hostsService h
 		return nil, err
 	}
 
-	err = hostsService.Add(&hosts.HostsParams{
+	err = hostsService.Add(&hosts.Params{
 		IP:    &ip,
 		Hosts: &secretManagerLocalHost,
 	})

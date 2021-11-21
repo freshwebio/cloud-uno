@@ -75,6 +75,10 @@ func (e *Entry) Export() string {
 	return fmt.Sprintf("%s %s%s", e.IP, strings.Join(e.Hosts, " "), comment)
 }
 
+// Mark adds a mark to an entry so it can be filtered
+// on, this is especially useful for the hosts manager
+// so it only manipulates hosts that were created by
+// cloud uno.
 func (e *Entry) Mark(mark string) {
 	e.marks = append(e.marks, mark)
 }
@@ -86,7 +90,7 @@ func (e *Entry) IsMarkedWith(mark string) bool {
 	i := 0
 	for !hasMark && i < len(e.marks) {
 		hasMark = e.marks[i] == mark
-		i += 1
+		i++
 	}
 	return hasMark
 }

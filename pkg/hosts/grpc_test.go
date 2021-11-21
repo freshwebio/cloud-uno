@@ -105,12 +105,12 @@ type mockManager struct {
 	ipHostsMap map[string]string
 }
 
-func (m *mockManager) Add(params *HostsParams) error {
+func (m *mockManager) Add(params *Params) error {
 	m.ipHostsMap[*params.IP] = *params.Hosts
 	return nil
 }
 
-func (m *mockManager) Remove(params *HostsParams) error {
+func (m *mockManager) Remove(params *Params) error {
 	hostsBefore := m.ipHostsMap[*params.IP]
 	hostsBeforeList := strings.Split(hostsBefore, ",")
 	hostsToRemoveList := strings.Split(*params.Hosts, ",")

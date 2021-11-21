@@ -63,7 +63,10 @@ var (
 	ErrFailedToRemoveHosts = errors.New("failed to remove the provided hosts from the given IP")
 )
 
-func (m *GRPCClient) Add(params *HostsParams) (err error) {
+// Add deals with making a request to a gRPC server
+// to add a list of hosts to a given IP for local
+// DNS emulation.
+func (m *GRPCClient) Add(params *Params) (err error) {
 	response, err := m.client.Add(context.Background(), &HostsRequest{
 		Ip:    *params.IP,
 		Hosts: *params.Hosts,
@@ -77,7 +80,10 @@ func (m *GRPCClient) Add(params *HostsParams) (err error) {
 	return nil
 }
 
-func (m *GRPCClient) Remove(params *HostsParams) (err error) {
+// Remove deals with making a request to a gRPC server
+// to remove a list of hosts from a given IP for
+// local DNS emulation.
+func (m *GRPCClient) Remove(params *Params) (err error) {
 	response, err := m.client.Remove(context.Background(), &HostsRequest{
 		Ip:    *params.IP,
 		Hosts: *params.Hosts,
@@ -100,8 +106,10 @@ type GRPCServer struct {
 	Impl Service
 }
 
+// Add deals with adding a list of hosts to a given IP for local
+// DNS emulation.
 func (m *GRPCServer) Add(ctx context.Context, req *HostsRequest) (*HostsResponse, error) {
-	err := m.Impl.Add(&HostsParams{
+	err := m.Impl.Add(&Params{
 		IP:    &req.Ip,
 		Hosts: &req.Hosts,
 	})
@@ -111,8 +119,10 @@ func (m *GRPCServer) Add(ctx context.Context, req *HostsRequest) (*HostsResponse
 	return &HostsResponse{Applied: true}, nil
 }
 
+// Remove deals with removing a list of hosts from a given IP for
+// local DNS emulation.
 func (m *GRPCServer) Remove(ctx context.Context, req *HostsRequest) (*HostsResponse, error) {
-	err := m.Impl.Remove(&HostsParams{
+	err := m.Impl.Remove(&Params{
 		IP:    &req.Ip,
 		Hosts: &req.Hosts,
 	})
