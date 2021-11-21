@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@craco/craco": "^6.4.1",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -17,11 +18,10 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "test:debug": "react-scripts test --runInBand",
-    "eject": "react-scripts eject",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "test:debug": "craco test --runInBand",
     "lint:report": "eslint --max-warnings 10 --ext .js,.jsx,.ts,.tsx src/ -f json -o lintreport.json",
     "lint:changes-only": "eslint --max-warnings 10 --cache --fix --ext .js,.jsx,.ts,.tsx src/",
     "lint": "eslint --max-warnings 10 --fix --ext .js,.jsx,.ts,.tsx src/",
@@ -48,6 +48,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
+    "craco-alias": "^3.0.1",
     "eslint": "^7.11.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
