@@ -18,6 +18,13 @@
 .env.test.local
 .env.production.local
 
+# V8 nodejs crash reports.
+report.*
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Test/linting reports
+lintreport.json
+test-report.xml
