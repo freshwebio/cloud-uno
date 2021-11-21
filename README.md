@@ -15,7 +15,8 @@ Cloud::1 enables running cloud services on your local machine for faster, cheape
 ### Build yourself
 
 - [Docker](https://docs.docker.com/get-docker/) - Some services in Cloud::1 run in their own docker containers so even when you run the app as a standalone binary, you still need Docker.
-- [Go](https://golang.org/dl/) - Cloud::1 is implemented in Go so in order to build from source you need Go installed.
+- [Go](https://golang.org/dl/) >= 1.15 - Cloud::1 is implemented in Go so in order to build from source you need Go installed.
+- [NodeJS](https://nodejs.org) >= 16.13.0  - The Cloud::1 UI requires NodeJS to build the single page application. 
 
 ## Configuration
 
@@ -109,6 +110,20 @@ AWS Services to run emulations for.
 | **Environment** | CLOUD_UNO_AWS_SERVICES=s3,dynamodb   |
 | **File**        | cloud_uno_aws_services s3,dynamodb   |
 
+### AWS IAM
+
+**(optional, default = false)**
+
+Whether IAM should be used to authenticate/authorise requests to local AWS service emulators.
+
+**Type** bool
+
+| Source          | Example                 |
+| --------------- | :---------------------- |
+| **Flag**        | -cloud_uno_aws_iam true |
+| **Environment** | CLOUD_UNO_AWS_IAM=true  |
+| **File**        | cloud_uno_aws_iam true  |
+
 ### Google Cloud Services
 
 **(required if AWS and Azure services aren't provided)**
@@ -123,6 +138,20 @@ Google Cloud Services to run emulations for.
 | **Environment** | CLOUD_UNO_GCLOUD_SERVICES=cloudstorage,datastore   |
 | **File**        | cloud_uno_gcloud_services cloudstorage,datastore   |
 
+### Google Cloud IAM
+
+**(optional, default = false)**
+
+Whether IAM should be used to authenticate/authorise requests to local Google Cloud service emulators.
+
+**Type** bool
+
+| Source          | Example                    |
+| --------------- | :------------------------- |
+| **Flag**        | -cloud_uno_gcloud_iam true |
+| **Environment** | CLOUD_UNO_GCLOUD_IAM=true  |
+| **File**        | cloud_uno_gcloud_iam true  |
+
 ### Azure Services
 
 **(required if AWS and Google Cloud services aren't provided)**
@@ -136,6 +165,20 @@ Azure Services to run emulations for.
 | **Flag**        | -cloud_uno_azure_services storage,cosmos  |
 | **Environment** | CLOUD_UNO_AZURE_SERVICES=storage,cosmos   |
 | **File**        | cloud_uno_azure_services storage,cosmos   |
+
+### Azure IAM
+
+**(optional, default = false)**
+
+Whether IAM should be used to authenticate/authorise requests to local Azure service emulators.
+
+**Type** bool
+
+| Source          | Example                    |
+| --------------- | :------------------------- |
+| **Flag**        | -cloud_uno_azure_iam true  |
+| **Environment** | CLOUD_UNO_AZURE_IAM=true   |
+| **File**        | cloud_uno_azure_iam true   |
 
 ### Debug
 
@@ -216,6 +259,11 @@ The host agent shares exactly the same configuration as the main server, see the
 ### Running Directly On The Host
 
 TODO: Provide instructions for downloading and running the binary locally.
+
+## Limitations of local emulators
+
+- Service emulators that hold secrets and manage keys are **NOT** encrypted, these emulators are designed to only be used on a developer's local machine.
+- IAM is off by default for all cloud provider emulators, see the configuration section above to find out how you can switch IAM on.
 
 ## Google Cloud Service Endpoints
 
