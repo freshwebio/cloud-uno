@@ -67,7 +67,7 @@ func (c *secretManagerController) AddVersion(w http.ResponseWriter, r *http.Requ
 	if err != nil {
 		httputils.HTTPError(
 			w, http.StatusBadRequest,
-			fmt.Sprintf("Invalid request: %s", err.Error()),
+			httputils.InvalidRequestMessage(err),
 		)
 		return
 	}
@@ -111,7 +111,7 @@ func (c *secretManagerController) Create(w http.ResponseWriter, r *http.Request)
 	if err != nil {
 		httputils.HTTPError(
 			w, http.StatusBadRequest,
-			fmt.Sprintf("Invalid request: %s", err.Error()),
+			httputils.InvalidRequestMessage(err),
 		)
 		return
 	}
