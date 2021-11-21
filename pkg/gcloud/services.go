@@ -71,6 +71,7 @@ func RegisterServices(resolver types.Resolver) (err error) {
 	// abstracted away from a REST API route handler, the default resolver will use
 	// the gRPC services for Google Cloud APIs that support gRPC.
 	if utils.CommaSeparatedListContains(*cfg.GCloudServices, GCloudSecretManagerName) {
+		fmt.Println("Registering secret manager!")
 		smRootDir := fmt.Sprintf("%s/gcloud/secretmanager", *cfg.DataDirectory)
 		var secretmgr secretmanager.SecretManagerServiceServer
 		secretmgr, err = grpc.NewSecretManager(smRootDir, fs, serverIP, hostsService)

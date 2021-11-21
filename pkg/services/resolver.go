@@ -10,6 +10,7 @@ package services
 
 import (
 	"github.com/freshwebio/cloud-uno/pkg/config"
+	"github.com/freshwebio/cloud-uno/pkg/gcloud"
 	"github.com/freshwebio/cloud-uno/pkg/hosts"
 	"github.com/freshwebio/cloud-uno/pkg/types"
 )
@@ -47,6 +48,8 @@ func (r *defaultResolver) Register(customRegisterFunc func(r types.Resolver) err
 	if err != nil {
 		return
 	}
+
+	err = gcloud.RegisterServices(r)
 
 	return
 }
