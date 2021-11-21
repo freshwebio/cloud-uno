@@ -11,6 +11,8 @@ jobs:
   tests_static_analysis:
     name: Tests & Static Code Analysis
     runs-on: ubuntu-latest
+    env:
+      client-working-directory: ./client
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -18,23 +20,44 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: "1.17"
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "16.x"
 
       # Install global Go dependencies
       - name: Install Go Global Dependencies
         run: go get -u golang.org/x/lint/golint && go get -u gopkg.in/check.v1 && go get -u golang.org/x/sys/unix
         working-directory: ${{env.working-directory}}
 
+      - name: Install Client Dependencies
+        run: yarn
+        working-directory: ${{env.client-working-directory}}
+
       # SonarCloud scan runs in a docker container where the workspace directory gets mounted to /github/workspace
       # so we need to replace all references to the github workspace directory with /github/workspace.
-      - name: Linting
+      - name: Server Linting
         run: >
           export PATH=$PATH:$(go env GOPATH)/bin && bash scripts/lint.sh &&
             sed -i 's#${{ github.workspace }}#/github/workspace#g' lintreport.out
         working-directory: ${{env.working-directory}}
 
-      - name: Run Tests
+      - name: Run Server + Host Agent Tests
         run: bash scripts/service-tools.sh --tests unit,integration
         working-directory: ${{env.working-directory}}
+
+      # SonarCloud scan runs in a docker container where the workspace directory gets mounted to /github/workspace
+      # so we need to replace all references to the github workspace directory with /github/workspace.
+      - name: Client Linting
+        run: yarn lint:report && sed -i 's#${{ github.workspace }}#/github/workspace#g' lintreport.json
+        working-directory: ${{env.client-working-directory}}
+
+      - name: Run Client Tests
+        run: yarn test
+        working-directory: ${{env.client-working-directory}}
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
