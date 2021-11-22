@@ -23,7 +23,8 @@ services:
     ports:
       # Expose on port 80 on the host as due to the static ip
       # there won't be any conflicts.
-      - "80:5988"
+      # The static IP must be in the port binding to isolate it!
+      - "172.18.0.22:80:5988"
     networks:
       clouduno:
         ipv4_address: 172.18.0.22
