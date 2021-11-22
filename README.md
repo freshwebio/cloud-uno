@@ -229,7 +229,9 @@ services:
     ports:
       # Expose on port 80 on the host as due to the static ip
       # there won't be any conflicts.
-      - "80:5988"
+      # The static IP must be in the port binding to isolate it
+      # from localhost/127.0.0.1 and other loopback aliases.
+      - "172.18.0.22:80:5988"
     networks:
       clouduno:
         ipv4_address: 172.18.0.22
@@ -270,7 +272,7 @@ TODO: Provide instructions for downloading and running the binary locally.
 Cloud::1 provides some google cloud services that are accessible via a HTTP API along with a subset of services
 that support gRPC.
 
-All http endpoints are not secure unless you create your own reverse proxy that terminates with TLS, so use "http://" as the protocol for every endpoint.
+All http endpoints are not secure unless you create your own reverse proxy that terminates with TLS, so use "http://" as the protocol scheme for every endpoint.
 
 *The square brackets `[.*]` represent the service name that can be used in configuration when selecting services to run.*
 
@@ -283,6 +285,20 @@ All http endpoints are not secure unless you create your own reverse proxy that 
 | [API Gateway](https://cloud.google.com/api-gateway/docs/apis) [apigateway] | HTTP | apigateway.googleapis.local(:5988)/v1beta/ |
 | [Cloud Storage](https://cloud.google.com/storage/docs/json_api) [storage] | HTTP | storage.googleapis.local(:5988)/storage/v1/ |
 
+## Cloud::1 UI
+
+Cloud::1 UI provides an admin console that allows you to manage the selected local cloud services from your browser.
+
+The Cloud::1 UI is accessible via the host `console.clouduno.local(:5988)`.
+
+If you have enabled IAM for a particular provider, you will need to log in to the local cloud provider emulator to gain access to the corresponding enabled services.
+
+## Cloud::1 API
+
+The Cloud::1 server includes an API designed to be used by frontends such as the Cloud::1 UI. This API has both a gRPC and REST API interface.
+todo: add links to gRPC and REST docs for each version.
+
+The current version of the Cloud::1 API is accessible via the base url `api.clouduno.local(:5988)/v1/`, the version number is in the path to facilitate evolution of the API and provide separate API documents for each version of the API.
 
 ## Contributing
 

@@ -24,6 +24,7 @@
 - `hostagent` - This commit scope should be used for commits that represent work that only affects the host agent.
 - `server` - This commit scope should be used for commits that represent work that only affects the Cloud Uno server but is not specific to any specific cloud provider emulation.
 - `ui` - This commit scope should be used for commits that represent work on the Cloud Uno UI.
+- `api` - This commit scope should be used for commits that represent work on the Cloud Uno API.
 
 The commit scope can be omitted for changes that cut across these scopes.
 However, it's best to check in commits that map to a specific scope where possible.
