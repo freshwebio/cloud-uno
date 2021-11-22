@@ -50,6 +50,8 @@ func SelectServerIP(cfg *config.Config) (string, error) {
 // have running on port 80 on your local machine and allows us to channel
 // all cloud uno host names to a separate IP.
 // This is ONLY supported for linux and darwin platforms!
+// Loop back aliases created by this function are not persistent, the program
+// that calls this function will need to run again on reboot.
 func CreateLoopBackAlias(ip string) error {
 	// Make sure the IP is safe to inject by making sure it's a valid IP.
 	if net.ParseIP(ip) == nil {
@@ -60,7 +62,6 @@ func CreateLoopBackAlias(ip string) error {
 		cmd := exec.Command("/bin/sh", "-c", fmt.Sprintf("sudo ifconfig lo0 alias %s", ip))
 		return cmd.Run()
 	} else if runtime.GOOS == "linux" {
-		// sudo ifconfig eth0:0 {ip} netmask 255.255.255.0 up
 		cmd := exec.Command("/bin/sh", "-c", fmt.Sprintf("sudo ifconfig eth0:0 %s netmask 255.255.255.0 up", ip))
 		return cmd.Run()
 	}
