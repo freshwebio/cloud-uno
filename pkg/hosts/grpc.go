@@ -28,6 +28,7 @@ var (
 func NewGRPCClient(hostAgentAddr string) (Service, error) {
 	// Add some retry behaviour as hosts agent is not guaranteed
 	// to be running as the server starts up.
+
 	conn, err := grpc.Dial(
 		hostAgentAddr,
 		// This is designed for a developer's local machine, so insecure gRPC
@@ -35,14 +36,18 @@ func NewGRPCClient(hostAgentAddr string) (Service, error) {
 		grpc.WithInsecure(),
 		grpc.WithConnectParams(
 			grpc.ConnectParams{
-				MinConnectTimeout: 10 * time.Second,
+				MinConnectTimeout: GRPCMinConnectTimeout,
 				Backoff:           backoff.DefaultConfig,
 			},
 		),
+		// We'll block at this point as at times the host agent won't be available
+		// at start up and without blocking the RPC requests will error out.
+		grpc.WithBlock(),
 	)
 	if err != nil {
 		return nil, err
 	}
+
 	mgrClient := NewManagerClient(conn)
 	return &GRPCClient{
 		client: mgrClient,
