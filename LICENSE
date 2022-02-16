@@ -7,7 +7,7 @@ Licensed Work:        CloudUno 1.0
                       The Licensed Work is (c) 2022 FRESHWEB LTD.
 Additional Use Grant: You may make use of the Licensed Work, provided that
                       you may not use the Licensed Work for a Managed Cloud Provider Emulation
-                      Service.
+                      Service or a Managed Integrated Development Environment.
 
                       A “Managed Cloud Provider Emulation Service” is a commercial offering that
                       allows third parties (other than your employees and
@@ -16,7 +16,18 @@ Additional Use Grant: You may make use of the Licensed Work, provided that
                       the cloud-hosted emulator state, emulator state synchronisation and emulator state sharing features
                       that would be managed on behalf of such third parties.
 
-Change Date:          2025-02-30. Change date is three years from release date.
+                      A "Managed Integrated Development Environment" is a commercial offering
+                      that allows third parties (other than your employees and contractors)
+                      to access the functionality of a Licensed Work so that such third parties directly benefit
+                      from the cloud service emulation features that make up part of an Integrated Development Environment
+                      that would be managed on behalf of such third parties.
+                      
+                      An "Integrated Development Environment" is a Graphical User Interface that combines
+                      common developer tools for building software applications. These common developer tools
+                      include source code editors, software build automation tools, debuggers and tools for testing
+                      software.
+
+Change Date:          2025-05-30. Change date is three years from release date.
 
 Change License:       Apache License, Version 2.0 (see licenses/LICENSE-Apache-2.0)
 
